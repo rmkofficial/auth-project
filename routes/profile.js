@@ -1,16 +1,12 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const User = require('../models/User');
+const { getProfile, updateProfile } = require('../controllers/profileController');
 const router = express.Router();
 
-router.get('/', auth, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select('-password');
-        res.json(user);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
-    }
-});
+// Profil bilgilerini getirme
+router.get('/', auth, getProfile);
+
+// Profil bilgilerini güncelleme
+router.put('/update', auth, updateProfile);
 
 module.exports = router;
