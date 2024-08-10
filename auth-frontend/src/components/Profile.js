@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Grid, Paper } from '@mui/material';
 import axios from 'axios';
 
 const Profile = () => {
@@ -39,7 +39,7 @@ const Profile = () => {
         try {
             const res = await axios.put(
                 'http://localhost:5000/api/profile',
-                { name, bio, location }, 
+                { name, bio, location },
                 {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 }
@@ -58,46 +58,66 @@ const Profile = () => {
     };
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
             <Box sx={{ mt: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>Profile</Typography>
-                <form onSubmit={onSubmit}>
-                    <TextField
-                        label="Name"
-                        name="name"
-                        value={name}
-                        onChange={onChange} 
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Email"
-                        name="email"
-                        value={email}
-                        fullWidth
-                        margin="normal"
-                        disabled 
-                    />
-                    <TextField
-                        label="Bio"
-                        name="bio"
-                        value={bio}
-                        onChange={onChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Location"
-                        name="location"
-                        value={location}
-                        onChange={onChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                        Update Profile
-                    </Button>
-                </form>
+                <Paper elevation={3} sx={{ p: 3 }}>
+                    <Typography variant="h4" component="h1" gutterBottom>Profile</Typography>
+                    <form onSubmit={onSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Name"
+                                    name="name"
+                                    value={name}
+                                    onChange={onChange}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    value={email}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Bio"
+                                    name="bio"
+                                    value={bio}
+                                    onChange={onChange}
+                                    fullWidth
+                                    margin="normal"
+                                    multiline
+                                    rows={4}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Location"
+                                    name="location"
+                                    value={location}
+                                    onChange={onChange}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                                    Update Profile
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Paper>
             </Box>
         </Container>
     );

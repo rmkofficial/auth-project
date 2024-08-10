@@ -26,7 +26,6 @@ const RegisterLogin = ({ onLogin }) => {
 
             localStorage.setItem('token', res.data.token);
 
-
             onLogin();
             history.push('/profile');
         } catch (err) {
@@ -76,9 +75,16 @@ const RegisterLogin = ({ onLogin }) => {
                     </Button>
                 </form>
                 <Button
-                    color="secondary"
                     fullWidth
-                    sx={{ mt: 2 }}
+                    sx={{
+                        mt: 2,
+                        color: '#1976D2',
+                        fontWeight: 'bold',
+                        textDecoration: 'underline',
+                        '&:hover': {
+                            color: '#125EA2',
+                        },
+                    }}
                     onClick={() => setIsRegister(!isRegister)}
                 >
                     {isRegister ? 'Already have an account? Login' : 'Don’t have an account? Register'}
