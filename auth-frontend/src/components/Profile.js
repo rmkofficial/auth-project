@@ -1,4 +1,3 @@
-// src/components/Profile.js
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
@@ -40,7 +39,7 @@ const Profile = () => {
         try {
             const res = await axios.put(
                 'http://localhost:5000/api/profile',
-                formData,
+                { name, bio, location }, 
                 {
                     headers: { 'x-auth-token': localStorage.getItem('token') }
                 }
@@ -51,8 +50,10 @@ const Profile = () => {
                 bio: res.data.bio || '',
                 location: res.data.location || ''
             });
+            alert('Profile updated successfully!');
         } catch (err) {
             console.error(err.response.data);
+            alert('An error occurred while updating the profile.');
         }
     };
 
@@ -65,9 +66,9 @@ const Profile = () => {
                         label="Name"
                         name="name"
                         value={name}
+                        onChange={onChange} 
                         fullWidth
                         margin="normal"
-                        disabled
                     />
                     <TextField
                         label="Email"
@@ -75,7 +76,7 @@ const Profile = () => {
                         value={email}
                         fullWidth
                         margin="normal"
-                        disabled
+                        disabled 
                     />
                     <TextField
                         label="Bio"
