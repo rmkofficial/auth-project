@@ -1,51 +1,58 @@
+// src/components/Profile.js
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
 
-function Profile() {
-    const [profileData, setProfileData] = useState({
+const Profile = () => {
+    const [formData, setFormData] = useState({
         name: '',
-        email: ''
+        email: '',
+        bio: '',
+        location: ''
     });
+
+    const { name, email, bio, location } = formData;
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    const res = await axios.get('http://localhost:5000/api/profile', {
-                        headers: {
-                            'x-auth-token': token
-                        }
-                    });
-                    setProfileData(res.data);
-                } catch (err) {
-                    console.error(err.response.data);
-                }
+            try {
+                const res = await axios.get('http://localhost:5000/api/profile', {
+                    headers: { 'x-auth-token': localStorage.getItem('token') }
+                });
+                setFormData({
+                    name: res.data.name || '',
+                    email: res.data.email || '',
+                    bio: res.data.bio || '',
+                    location: res.data.location || ''
+                });
+            } catch (err) {
+                console.error(err.response.data);
             }
         };
 
         fetchProfile();
     }, []);
 
-    const { name, email } = profileData;
-
-    const onChange = e => setProfileData({ ...profileData, [e.target.name]: e.target.value });
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = async e => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const res = await axios.put('http://localhost:5000/api/profile/update', profileData, {
-                    headers: {
-                        'x-auth-token': token
-                    }
-                });
-                console.log(res.data);
-            } catch (err) {
-                console.error(err.response.data);
-            }
+        try {
+            const res = await axios.put(
+                'http://localhost:5000/api/profile',
+                formData,
+                {
+                    headers: { 'x-auth-token': localStorage.getItem('token') }
+                }
+            );
+            setFormData({
+                name: res.data.name || '',
+                email: res.data.email || '',
+                bio: res.data.bio || '',
+                location: res.data.location || ''
+            });
+        } catch (err) {
+            console.error(err.response.data);
         }
     };
 
@@ -58,20 +65,33 @@ function Profile() {
                         label="Name"
                         name="name"
                         value={name}
-                        onChange={onChange}
                         fullWidth
                         margin="normal"
-                        required
+                        disabled
                     />
                     <TextField
                         label="Email"
                         name="email"
-                        type="email"
                         value={email}
+                        fullWidth
+                        margin="normal"
+                        disabled
+                    />
+                    <TextField
+                        label="Bio"
+                        name="bio"
+                        value={bio}
                         onChange={onChange}
                         fullWidth
                         margin="normal"
-                        required
+                    />
+                    <TextField
+                        label="Location"
+                        name="location"
+                        value={location}
+                        onChange={onChange}
+                        fullWidth
+                        margin="normal"
                     />
                     <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                         Update Profile
@@ -80,6 +100,6 @@ function Profile() {
             </Box>
         </Container>
     );
-}
+};
 
 export default Profile;

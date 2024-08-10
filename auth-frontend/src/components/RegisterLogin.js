@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
-function Login() {
+const RegisterLogin = ({ onLogin }) => {
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: ''
     });
+    const [isRegister, setIsRegister] = useState(true);
+    const history = useHistory();
 
-    const { email, password } = formData;
+    const { name, email, password } = formData;
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = async e => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-            console.log(res.data);
+            const url = isRegister
+                ? 'http://localhost:5000/api/auth/register'
+                : 'http://localhost:5000/api/auth/login';
+            const res = await axios.post(url, isRegister ? { name, email, password } : { email, password });
+
             localStorage.setItem('token', res.data.token);
+
+
+            onLogin();
+            history.push('/profile');
         } catch (err) {
             console.error(err.response.data);
         }
@@ -26,12 +37,24 @@ function Login() {
     return (
         <Container maxWidth="sm">
             <Box sx={{ mt: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>Login</Typography>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    {isRegister ? 'Register' : 'Login'}
+                </Typography>
                 <form onSubmit={onSubmit}>
+                    {isRegister && (
+                        <TextField
+                            label="Name"
+                            name="name"
+                            value={name}
+                            onChange={onChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                    )}
                     <TextField
                         label="Email"
                         name="email"
-                        type="email"
                         value={email}
                         onChange={onChange}
                         fullWidth
@@ -49,12 +72,20 @@ function Login() {
                         required
                     />
                     <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                        Login
+                        {isRegister ? 'Register' : 'Login'}
                     </Button>
                 </form>
+                <Button
+                    color="secondary"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    onClick={() => setIsRegister(!isRegister)}
+                >
+                    {isRegister ? 'Already have an account? Login' : 'Don’t have an account? Register'}
+                </Button>
             </Box>
         </Container>
     );
-}
+};
 
-export default Login;
+export default RegisterLogin;
